@@ -232,6 +232,8 @@ def main():
 def testMain():
     cap = cv2.VideoCapture(0)
 
+    print("Press 'c' to calibrate with new images, 'e' to play the game and 'esc' to quit")
+
     while (cap.isOpened()):
 
         ret, img = cap.read()
@@ -262,7 +264,7 @@ def testMain():
             print("Player chooses: " + result)
             print("Computer chooses: " + computerChoice)
             winner = handleWinner(result, computerChoice)
-            print(winner)
+            print(winner + "\n")
 
 
     

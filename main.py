@@ -4,6 +4,8 @@ from gameLogic import *
 import time
 
 
+top, right, bottom, left = 10, 100, 300, 400
+
 def calibrateWithNewImages():
     rock = False
     paper = False
@@ -20,7 +22,12 @@ def calibrateWithNewImages():
 
         ret, img = cap.read()
 
+
+        cv2.rectangle(img, (left, top), (right, bottom), (0, 255, 0), 2)
         cv2.imshow('input', img)
+
+        roi = img[top:bottom, right:left]
+        
 
         k = cv2.waitKey(10)
 
@@ -45,15 +52,15 @@ def calibrateWithNewImages():
         if k == 99:
 
             if (not rock):
-                cv2.imwrite("./rock/0.jpg", img)
+                cv2.imwrite("./rock/0.jpg", roi)
                 rock = True
             
             elif (not paper):
-                cv2.imwrite("./paper/0.jpg", img)
+                cv2.imwrite("./paper/0.jpg", roi)
                 paper = True
 
             elif (not scissor):
-                cv2.imwrite("./scissors/0.jpg", img)
+                cv2.imwrite("./scissors/0.jpg", roi)
                 scissor = True
 
         elif k == 27:
@@ -150,9 +157,14 @@ def main():
 
     while (cap.isOpened()):
         ret, img = cap.read()
+        #top, right, bottom, left = 10, 100, 450, 400
 
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        roi = img[top:bottom, right:left]
+
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
+
+        
 
         ret, imgThresh = cv2.threshold(
             blur, 70, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
@@ -179,7 +191,12 @@ def main():
             winner = handleWinner(result, computerChoice)
             print(winner)
 
-        cv2.imshow("Input", imgThresh)
+
+        cv2.rectangle(img, (left, top), (right, bottom), (0, 255, 0), 2)
+        cv2.imshow("Input", img)
+        cv2.imshow("Actual hand input", imgThresh)
+
+        
 
 
 def testMain():

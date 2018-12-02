@@ -57,13 +57,15 @@ def calibrateWithNewImages():
             if (not rock and rockCount != 5):
                 cv2.imwrite("./rock/" + str(rockCount) +".jpg", roi)
                 rockCount += 1
-                
+                print ("Picture " + str(rockCount) + " taken!")
+
                 if rockCount == 5:
                     rock = True
             
             elif (not paper and paperCount != 5):
                 cv2.imwrite("./paper/" + str(paperCount) + ".jpg", roi)
                 paperCount += 1
+                print ("Picture " + str(paperCount) + " taken!")
 
                 if paperCount == 5:
                     paper = 5
@@ -71,11 +73,10 @@ def calibrateWithNewImages():
             elif (not scissor and scissorsPrinted != 5):
                 cv2.imwrite("./scissors/" + str(scissorCount) + ".jpg", roi)
                 scissorCount += 1
+                print ("Picture " + str(scissorsPrinted) + " taken!")
 
                 if scissorCount == 5:
                     scissor = True
-
-
 
         elif k == 27:
             break
@@ -155,81 +156,9 @@ def determineMaxConfidence(rockConfidence, paperConfidence, scissorsConfidence):
     else:
         #print ("Nothing there!")
         return ""
+        
 
 def main():
-
-    rock = False
-    paper = False
-    scissor = False
-
-    cap = cv2.VideoCapture(0)
-
-    rockImg = cv2.imread("./rock/0.jpg")
-    paperImg = cv2.imread("./paper/0.jpg")
-    scissorImg = cv2.imread("./scissors/0.jpg")
-    ambientImg = cv2.imread("./ambient/0.jpg")
-
-    rockGray = cv2.cvtColor(rockImg, cv2.COLOR_BGR2GRAY)
-    paperGray = cv2.cvtColor(paperImg, cv2.COLOR_BGR2GRAY)
-    scissorGray = cv2.cvtColor(scissorImg, cv2.COLOR_BGR2GRAY)
-    ambientGray = cv2.cvtColor(ambientImg, cv2.COLOR_BGR2GRAY)
-
-    ret1, rockThresh = cv2.threshold(
-        rockGray, 70, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-    ret2, paperThresh = cv2.threshold(
-        paperGray, 70, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-    ret3, scissorThresh = cv2.threshold(
-        scissorGray, 70, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-    ret4, ambientThresh = cv2.threshold(
-        ambientGray, 70, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-
-    print("Press 'c' to calibrate with new images, 'e' to play the game and 'esc' to quit")
-
-    while (cap.isOpened()):
-        ret, img = cap.read()
-        #top, right, bottom, left = 10, 100, 450, 400
-
-        roi = img[top:bottom, right:left]
-
-        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-        blur = cv2.GaussianBlur(gray, (5, 5), 0)
-
-        
-
-        ret, imgThresh = cv2.threshold(
-            blur, 70, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-
-        k = cv2.waitKey(10)
-        if k == 27:
-            break
-
-        elif k == 99:
-            cap.release()
-            cv2.destroyAllWindows()
-            print("Calibrate with new images")
-            calibrateWithNewImages()
-            cap = cv2.VideoCapture(0)
-
-
-        elif k == 101:
-            print("")
-            result = templateMatch(
-                blur, scissorGray, rockGray, paperGray, ambientGray)
-            computerChoice = runGame()
-            print("Player chooses: " + result)
-            print("Computer chooses: " + computerChoice)
-            winner = handleWinner(result, computerChoice)
-            print(winner)
-
-
-        cv2.rectangle(img, (left, top), (right, bottom), (0, 255, 0), 2)
-        cv2.imshow("Input", img)
-        cv2.imshow("Actual hand input", imgThresh)
-
-        
-
-
-def testMain():
     cap = cv2.VideoCapture(0)
 
     print("Press 'c' to calibrate with new images, 'e' to play the game and 'esc' to quit")
@@ -251,6 +180,7 @@ def testMain():
             cv2.destroyAllWindows()
             print("Calibrate with new images")
             calibrateWithNewImages()
+            print("Press 'c' to calibrate with new images, 'e' to play the game and 'esc' to quit")
             cap = cv2.VideoCapture(0)
 
         elif k == 101:
@@ -269,6 +199,5 @@ def testMain():
 
     
 
-testMain()
+main()
 
-#main()

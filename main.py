@@ -244,6 +244,13 @@ def testMain():
         if k == 27:
             break
 
+        elif k == 99:
+            cap.release()
+            cv2.destroyAllWindows()
+            print("Calibrate with new images")
+            calibrateWithNewImages()
+            cap = cv2.VideoCapture(0)
+
         elif k == 101:
             x = getTotalConfidence(img, "./rock/")
             y = getTotalConfidence(img, "./paper/")
@@ -251,7 +258,12 @@ def testMain():
 
             result = determineMaxConfidence(x, y, z)
 
-            print (result)
+            computerChoice = runGame()
+            print("Player chooses: " + result)
+            print("Computer chooses: " + computerChoice)
+            winner = handleWinner(result, computerChoice)
+            print(winner)
+
 
     
 

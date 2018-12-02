@@ -13,6 +13,9 @@ def calibrateWithNewImages():
     rockPrinted = False
     paperPrinted = False
     scissorsPrinted = False
+    rockCount = 0
+    scissorCount = 0
+    paperCount = 0
 
     time.sleep(1)
 
@@ -51,17 +54,28 @@ def calibrateWithNewImages():
 
         if k == 99:
 
-            if (not rock):
-                cv2.imwrite("./rock/0.jpg", roi)
-                rock = True
+            if (not rock and rockCount != 5):
+                cv2.imwrite("./rock/" + str(rockCount) +".jpg", roi)
+                rockCount += 1
+                
+                if rockCount == 5:
+                    rock = True
             
-            elif (not paper):
-                cv2.imwrite("./paper/0.jpg", roi)
-                paper = True
+            elif (not paper and paperCount != 5):
+                cv2.imwrite("./paper/" + str(paperCount) + ".jpg", roi)
+                paperCount += 1
 
-            elif (not scissor):
-                cv2.imwrite("./scissors/0.jpg", roi)
-                scissor = True
+                if paperCount == 5:
+                    paper = 5
+
+            elif (not scissor and scissorsPrinted != 5):
+                cv2.imwrite("./scissors/" + str(scissorCount) + ".jpg", roi)
+                scissorCount += 1
+
+                if scissorCount == 5:
+                    scissor = True
+
+
 
         elif k == 27:
             break
@@ -72,7 +86,7 @@ def getTotalConfidence(src, imageDir):
     totalMatches = []
     totalConfidence = 0
 
-    for i in range(3):
+    for i in range(5):
         tempImg = cv2.imread(imageDir + str(i) +".jpg")
         totalImages.append(tempImg)
 
@@ -125,6 +139,22 @@ def templateMatch(gray, scissorGray, rockGray, paperGray, ambientGray):
         #print ("Nothing there!")
         return ""
 
+def determineMaxConfidence(rockConfidence, paperConfidence, scissorsConfidence):
+    if (paperConfidence > rockConfidence and paperConfidence > scissorsConfidence):
+        #print ("Paper!")
+        return "paper"
+
+    elif (rockConfidence > paperConfidence and rockConfidence > scissorsConfidence):
+        #print ("Rock!")
+        return "rock"
+
+    elif (scissorsConfidence > rockConfidence and scissorsConfidence > paperConfidence):
+        #print ("Scissors!")
+        return "scissors"
+
+    else:
+        #print ("Nothing there!")
+        return ""
 
 def main():
 
@@ -206,6 +236,7 @@ def testMain():
 
         ret, img = cap.read()
 
+        cv2.rectangle(img, (left, top), (right, bottom), (0, 255, 0), 2)
         cv2.imshow("input", img)
 
         k = cv2.waitKey(10)
@@ -217,10 +248,13 @@ def testMain():
             x = getTotalConfidence(img, "./rock/")
             y = getTotalConfidence(img, "./paper/")
             z = getTotalConfidence(img, "./scissors/")
-            print (x,y,z)
+
+            result = determineMaxConfidence(x, y, z)
+
+            print (result)
 
     
 
-#testMain()
+testMain()
 
-main()
+#main()

@@ -3,7 +3,6 @@ import numpy as np
 from gameLogic import *
 import time
 
-
 top, right, bottom, left = 10, 100, 300, 400
 
 def calibrateWithNewImages():
@@ -25,13 +24,11 @@ def calibrateWithNewImages():
 
         ret, img = cap.read()
 
-
         cv2.rectangle(img, (left, top), (right, bottom), (0, 255, 0), 2)
         cv2.imshow('input', img)
 
         roi = img[top:bottom, right:left]
         
-
         k = cv2.waitKey(10)
 
         if (rock and paper and scissor):
@@ -48,9 +45,6 @@ def calibrateWithNewImages():
         elif (rock and paper and not scissor and not scissorsPrinted):
             print ("press c key to take a picture of scissors!")
             scissorsPrinted = True
-
-
-       
 
         if k == 99:
 
@@ -90,13 +84,6 @@ def getTotalConfidence(src, imageDir):
     for i in range(5):
         tempImg = cv2.imread(imageDir + str(i) +".jpg")
         totalImages.append(tempImg)
-
-    '''cv2.imshow('fuck',totalImages[1])
-
-    k = cv2.waitKey(0)
-    if k == 27:
-        cv2.destroyAllWindows()'''
-
     
     for image in totalImages:
         tempMatch = cv2.matchTemplate(src, image, cv2.TM_CCOEFF_NORMED)
@@ -156,7 +143,6 @@ def determineMaxConfidence(rockConfidence, paperConfidence, scissorsConfidence):
     else:
         #print ("Nothing there!")
         return ""
-        
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -166,10 +152,8 @@ def main():
     while (cap.isOpened()):
 
         ret, img = cap.read()
-
         cv2.rectangle(img, (left, top), (right, bottom), (0, 255, 0), 2)
         cv2.imshow("input", img)
-
         k = cv2.waitKey(10)
 
         if k == 27:
@@ -195,9 +179,5 @@ def main():
             print("Computer chooses: " + computerChoice)
             winner = handleWinner(result, computerChoice)
             print(winner + "\n")
-
-
-    
-
 main()
 
